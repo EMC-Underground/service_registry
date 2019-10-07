@@ -1,0 +1,26 @@
+version: "3.4"
+
+services:
+  server:
+    image: registry
+    networks:
+      - traefik-net
+    volumes:
+      - server:/var/lib/registry
+    deploy:
+      replicas: 1
+      labels:
+        - "traefik.frontend.rule=Host:registry.${DNS_SUFFIX}"
+        - "traefik.port=5000"
+        - "traefik.docker.network=traefik-net"
+        - "traefik.enable=true"
+
+networks:
+  traefik-net:
+    external: true
+
+volumes:
+  server:
+    driver: rexray/scaleio
+    driver_opts:
+      size: 200
